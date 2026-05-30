@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Board } from './components/Board';
 import { RefreshCw } from 'lucide-react';
 
