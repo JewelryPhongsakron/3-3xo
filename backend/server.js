@@ -84,7 +84,7 @@ app.post('/api/move', (req, res) => {
   res.json({ move });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`AI Backend running on http://localhost:${PORT}`);
+  console.log(`AI Backend running on port ${PORT}`);
 });
