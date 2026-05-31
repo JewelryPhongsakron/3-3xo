@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Board } from './components/Board';
+import { RandomizerModal } from './components/RandomizerModal';
 import { RefreshCw } from 'lucide-react';
 
 function calculateWinner(squares: (string | null)[]) {
@@ -24,17 +25,50 @@ function calculateWinner(squares: (string | null)[]) {
 
 function App() {
   const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
+  const [xIsNext, setXIsNext] = useState<boolean | null>(null); // null means game hasn't started
   const [isAITurn, setIsAITurn] = useState(false);
+  const [isRandomizing, setIsRandomizing] = useState(true);
+  
+  const [stats, setStats] = useState(() => {
+    const saved = localStorage.getItem('xo_stats');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return { wins: 0, losses: 0, draws: 0 };
+  });
 
   const winInfo = calculateWinner(squares);
   const winner = winInfo?.winner;
   const winningLine = winInfo?.line || null;
   const isDraw = !winner && squares.every((square) => square !== null);
 
+  useEffect(() => {
+    if (winner === 'X') {
+      setStats((prev: any) => {
+        const newStats = { ...prev, wins: prev.wins + 1 };
+        localStorage.setItem('xo_stats', JSON.stringify(newStats));
+        return newStats;
+      });
+    } else if (winner === 'O') {
+      setStats((prev: any) => {
+        const newStats = { ...prev, losses: prev.losses + 1 };
+        localStorage.setItem('xo_stats', JSON.stringify(newStats));
+        return newStats;
+      });
+    } else if (isDraw) {
+      setStats((prev: any) => {
+        const newStats = { ...prev, draws: prev.draws + 1 };
+        localStorage.setItem('xo_stats', JSON.stringify(newStats));
+        return newStats;
+      });
+    }
+  }, [winner, isDraw]);
+
   // Trigger AI move when it's O's turn
   useEffect(() => {
-    if (!xIsNext && !winner && !isDraw) {
+    if (xIsNext === false && !winner && !isDraw && !isRandomizing) {
       const fetchAIMove = async () => {
         setIsAITurn(true);
         try {
@@ -64,11 +98,11 @@ function App() {
       
       fetchAIMove();
     }
-  }, [xIsNext, squares, winner, isDraw]);
+  }, [xIsNext, squares, winner, isDraw, isRandomizing]);
 
   const handleClick = (i: number) => {
-    // Prevent clicking if AI is thinking, square is filled, game over, or not X's turn
-    if (squares[i] || winner || !xIsNext || isAITurn) {
+    // Prevent clicking if AI is thinking, square is filled, game over, or not X's turn, or randomizing
+    if (squares[i] || winner || xIsNext !== true || isAITurn || isRandomizing) {
       return;
     }
     
@@ -84,8 +118,9 @@ function App() {
 
   const resetGame = () => {
     setSquares(Array(9).fill(null));
-    setXIsNext(true);
     setIsAITurn(false);
+    setIsRandomizing(true);
+    setXIsNext(null);
   };
 
   let status;
@@ -99,16 +134,37 @@ function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen pt-10 pb-20 px-4">
+      {isRandomizing && (
+        <RandomizerModal 
+          onComplete={(isX) => {
+            setXIsNext(isX);
+            setIsRandomizing(false);
+          }} 
+        />
+      )}
       <div className="max-w-md w-full flex flex-col items-center">
         
         {/* Notebook Title */}
-        <div className="mb-8 text-center" style={{ transform: 'rotate(-2deg)' }}>
+        <div className="mb-6 text-center" style={{ transform: 'rotate(-2deg)' }}>
           <h1 className="text-5xl sm:text-6xl font-bold text-slate-700 underline decoration-wavy decoration-marker-pink underline-offset-8">
-            Tic-Tac-Toe
+            3*3 Xo
           </h1>
           <p className={`text-xl sm:text-2xl mt-4 font-bold tracking-wide transition-colors duration-300 ${isAITurn ? 'text-marker-blue' : 'text-slate-600'}`}>
             {status}
           </p>
+        </div>
+
+        {/* Stats */}
+        <div className="mb-8 flex gap-3 sm:gap-4 text-slate-600 font-bold text-base sm:text-lg" style={{ transform: 'rotate(1deg)' }}>
+          <div className="px-3 py-2 bg-white/40 rounded-xl shadow-sm border border-slate-300/50 backdrop-blur-sm">
+            Wins: <span className="text-emerald-600">{stats.wins}</span>
+          </div>
+          <div className="px-3 py-2 bg-white/40 rounded-xl shadow-sm border border-slate-300/50 backdrop-blur-sm">
+            Losses: <span className="text-rose-600">{stats.losses}</span>
+          </div>
+          <div className="px-3 py-2 bg-white/40 rounded-xl shadow-sm border border-slate-300/50 backdrop-blur-sm">
+            Draws: <span className="text-amber-600">{stats.draws}</span>
+          </div>
         </div>
 
         {/* Game Board */}
