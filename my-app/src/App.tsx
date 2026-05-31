@@ -37,7 +37,7 @@ function App() {
         return JSON.parse(saved);
       } catch (e) {}
     }
-    return { wins: 0, losses: 0, draws: 0 };
+    return { win: 0, loss: 0, draw: 0 };
   });
 
   const winInfo = calculateWinner(squares);
@@ -92,6 +92,7 @@ function App() {
           }
         } catch (error) {
           console.error('Error fetching AI move:', error);
+          alert('ไม่สามารถเชื่อมต่อกับ AI Server ได้! (AI Backend down หรือ URL ไม่ถูกต้อง)\n\nหากคุณ Deploy หรือเล่นผ่านมือถือ: ตัวเกมอาจจะพยายามเรียก localhost ซึ่งจะทำงานไม่ได้ คุณต้อง Deploy Backend และตั้งค่า VITE_API_URL ให้ถูกต้องครับ');
         } finally {
           setIsAITurn(false);
         }
@@ -155,7 +156,7 @@ function App() {
         {/* Notebook Title */}
         <div className="mb-6 text-center" style={{ transform: 'rotate(-2deg)' }}>
           <h1 className="text-5xl sm:text-6xl font-bold text-slate-700 underline decoration-wavy decoration-marker-pink underline-offset-8">
-            3*3 Xo
+            XO OX 
           </h1>
           <p className={`text-xl sm:text-2xl mt-4 font-bold tracking-wide transition-colors duration-300 ${isAITurn ? 'text-marker-blue' : 'text-slate-600'}`}>
             {status}

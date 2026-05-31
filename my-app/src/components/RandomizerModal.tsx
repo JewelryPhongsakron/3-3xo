@@ -63,9 +63,15 @@ export function RandomizerModal({ onComplete }: RandomizerModalProps) {
         className="bg-paper p-8 rounded-3xl shadow-[8px_8px_0px_rgba(0,0,0,0.15)] border-4 border-slate-700 flex flex-col items-center max-w-sm w-full mx-4"
         style={{ borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px', transform: 'rotate(-1deg)' }}
       >
-        <h2 className="text-2xl font-bold text-slate-700 mb-6 underline decoration-wavy decoration-marker-blue">
+        <h2 className="text-2xl font-bold text-slate-700 mb-2 underline decoration-wavy decoration-marker-blue">
           Who goes first?
         </h2>
+
+        <div className="flex gap-4 mb-4 text-lg font-bold text-slate-600 bg-white/40 px-4 py-2 rounded-xl border border-slate-200">
+          <span className="text-emerald-500">You = X</span>
+          <span className="text-slate-300">|</span>
+          <span className="text-rose-500">AI = O</span>
+        </div>
         
         <div className="h-32 w-full flex items-center justify-center bg-white/50 rounded-xl border-2 border-slate-300 mb-4 overflow-hidden relative">
           <div 
