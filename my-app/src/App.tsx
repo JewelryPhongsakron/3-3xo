@@ -29,13 +29,13 @@ function App() {
   const [xIsNext, setXIsNext] = useState<boolean | null>(null); // null means game hasn't started
   const [isAITurn, setIsAITurn] = useState(false);
   const [isRandomizing, setIsRandomizing] = useState(true);
-  
+
   const [stats, setStats] = useState(() => {
     const saved = localStorage.getItem('xo_stats');
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) { }
     }
     return { win: 0, loss: 0, draw: 0 };
   });
@@ -75,14 +75,14 @@ function App() {
         try {
           // Slight delay to make the AI feel natural
           await new Promise(resolve => setTimeout(resolve, 600));
-          
+
           const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
           const response = await fetch(`${apiUrl}/api/move`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ squares })
           });
-          
+
           const data = await response.json();
           if (data.move !== -1 && data.move !== undefined) {
             const nextSquares = squares.slice();
@@ -92,12 +92,11 @@ function App() {
           }
         } catch (error) {
           console.error('Error fetching AI move:', error);
-          alert('ไม่สามารถเชื่อมต่อกับ AI Server ได้! (AI Backend down หรือ URL ไม่ถูกต้อง)\n\nหากคุณ Deploy หรือเล่นผ่านมือถือ: ตัวเกมอาจจะพยายามเรียก localhost ซึ่งจะทำงานไม่ได้ คุณต้อง Deploy Backend และตั้งค่า VITE_API_URL ให้ถูกต้องครับ');
         } finally {
           setIsAITurn(false);
         }
       };
-      
+
       fetchAIMove();
     }
   }, [xIsNext, squares, winner, isDraw, isRandomizing]);
@@ -107,7 +106,7 @@ function App() {
     if (squares[i] || winner || xIsNext !== true || isAITurn || isRandomizing) {
       return;
     }
-    
+
     const row = Math.floor(i / 3);
     const col = i % 3;
     console.log(`Player X clicked on index: ${i} (Row: ${row}, Col: ${col})`);
@@ -137,26 +136,26 @@ function App() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen pt-10 pb-20 px-4">
       {isRandomizing && (
-        <RandomizerModal 
+        <RandomizerModal
           onComplete={(isX) => {
             setXIsNext(isX);
             setIsRandomizing(false);
-          }} 
+          }}
         />
       )}
-      
-      <ResultModal 
-        winner={winner} 
-        isDraw={isDraw} 
-        onPlayAgain={resetGame} 
+
+      <ResultModal
+        winner={winner}
+        isDraw={isDraw}
+        onPlayAgain={resetGame}
       />
 
       <div className="max-w-md w-full flex flex-col items-center">
-        
+
         {/* Notebook Title */}
         <div className="mb-6 text-center" style={{ transform: 'rotate(-2deg)' }}>
           <h1 className="text-5xl sm:text-6xl font-bold text-slate-700 underline decoration-wavy decoration-marker-pink underline-offset-8">
-            XO OX 
+            XO OX
           </h1>
           <p className={`text-xl sm:text-2xl mt-4 font-bold tracking-wide transition-colors duration-300 ${isAITurn ? 'text-marker-blue' : 'text-slate-600'}`}>
             {status}
