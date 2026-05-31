@@ -1,4 +1,5 @@
 import { RefreshCw } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface ResultModalProps {
   winner: string | null;
@@ -7,7 +8,20 @@ interface ResultModalProps {
 }
 
 export function ResultModal({ winner, isDraw, onPlayAgain }: ResultModalProps) {
-  if (!winner && !isDraw) return null;
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (winner || isDraw) {
+      const timer = setTimeout(() => {
+        setShow(true);
+      }, 1500); // ดีเลย์ 1.5 วินาทีเพื่อให้ดูผลลัพธ์บนกระดานก่อน
+      return () => clearTimeout(timer);
+    } else {
+      setShow(false);
+    }
+  }, [winner, isDraw]);
+
+  if (!show) return null;
 
   let title = '';
   let colorClass = '';
