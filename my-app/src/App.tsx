@@ -41,7 +41,7 @@ function App() {
   });
 
   const winInfo = calculateWinner(squares);
-  const winner = winInfo?.winner;
+  const winner = winInfo?.winner || null;
   const winningLine = winInfo?.line || null;
   const isDraw = !winner && squares.every((square) => square !== null);
 
