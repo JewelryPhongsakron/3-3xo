@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Board } from './components/Board';
 import { RandomizerModal } from './components/RandomizerModal';
+import { ResultModal } from './components/ResultModal';
 import { RefreshCw } from 'lucide-react';
 
 function calculateWinner(squares: (string | null)[]) {
@@ -142,6 +143,13 @@ function App() {
           }} 
         />
       )}
+      
+      <ResultModal 
+        winner={winner} 
+        isDraw={isDraw} 
+        onPlayAgain={resetGame} 
+      />
+
       <div className="max-w-md w-full flex flex-col items-center">
         
         {/* Notebook Title */}
