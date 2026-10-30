@@ -1,0 +1,17 @@
+{
+  "name": "3x3-xo",
+  "version": "2.0.0",
+  "description": "Tic-Tac-Toe vs an unbeatable minimax AI - frontend, backend and model-service, all Next.js + TypeScript",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm --prefix model-service install && npm --prefix backend install && npm --prefix frontend install",
+    "dev": "concurrently -n model,backend,frontend -c magenta,blue,green \"npm --prefix model-service run dev\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "test": "npm --prefix model-service test && npm --prefix backend test && npm --prefix frontend test",
+    "lint": "npm --prefix model-service run lint && npm --prefix backend run lint && npm --prefix frontend run lint",
+    "typecheck": "npm --prefix model-service run typecheck && npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "build": "npm --prefix model-service run build && npm --prefix backend run build && npm --prefix frontend run build"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

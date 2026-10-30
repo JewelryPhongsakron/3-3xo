@@ -1,0 +1,40 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Service names match the existing deploys (three-3xo, three-3xo-1).
+services:
+  # AI model (minimax). Only the backend calls it.
+  - type: web
+    name: three-3xo-model
+    runtime: node
+    plan: free
+    rootDir: model-service
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+
+  # API gateway used by the browser: https://three-3xo.onrender.com
+  - type: web
+    name: three-3xo
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MODEL_SERVICE_URL
+        value: https://three-3xo-model.onrender.com
+      - key: CORS_ORIGIN
+        value: https://three-3xo-1.onrender.com
+      - key: MODEL_TIMEOUT_MS
+        value: "60000"
+
+  # Static game UI: https://three-3xo-1.onrender.com
+  - type: web
+    name: three-3xo-1
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: out
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://three-3xo.onrender.com

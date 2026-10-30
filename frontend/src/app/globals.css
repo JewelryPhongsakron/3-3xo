@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper font-handwriting text-slate-800 m-0 p-0 overflow-x-hidden min-h-screen;
+  }
+}
